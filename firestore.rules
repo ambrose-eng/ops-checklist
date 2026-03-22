@@ -1,0 +1,29 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Roles are publicly readable (role names/colors shown on landing)
+    match /roles/{roleId} {
+      allow read: if true;
+      allow write: if false; // Admin only via Firebase Console
+    }
+
+    // Checklist items are publicly readable
+    match /checklist_items/{itemId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    // Submissions: anyone can create, no public reads
+    match /submissions/{submissionId} {
+      allow create: if true;
+      allow read, update, delete: if false;
+    }
+
+    // Audit log: write-only from app, read via Firebase Console
+    match /audit_log/{logId} {
+      allow create: if true;
+      allow read, update, delete: if false;
+    }
+  }
+}
